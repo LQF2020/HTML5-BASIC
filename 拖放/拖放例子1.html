@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<style type="text/css">
+			* {
+				padding: 0;
+				margin: 0;
+			}
+			div {
+				width: 180px;
+				height: 60px;
+				padding: 10px;
+				border: 1px solid #aaaaaa;
+				margin-left: 10px;
+				margin-top: 10px;
+			}
+		</style>
+		<script type="text/javascript">
+			function allowDrop(ev) {
+				var oEvent = event || ev;
+				oEvent.preventDefault();
+			}
+
+			function drag(ev) {
+				var oEvent = event || ev;
+				oEvent.dataTransfer.setData("Text", ev.target.id);
+			}
+
+			function drop(ev) {
+				var oEvent = event || ev;
+				oEvent.preventDefault();
+				var data = oEvent.dataTransfer.getData("Text");
+				oEvent.target.appendChild(document.getElementById(data));
+			}
+		</script>
+	</head>
+	<body>
+		<p>请把 W3School 的图片拖放到矩形中：</p>
+		image
+
+		<div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+		<br />
+		<div id="div2" ondrop="drop(event)" ondragover="allowDrop(event)">
+			<img id="drag1" src="./image.jpg" style="width: 180px; height: 60px" draggable="true" ondragstart="drag(event)" />
+		</div>
+	</body>
+</html>

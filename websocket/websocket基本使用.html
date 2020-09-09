@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Websocket的基本使用</title>
+    <style>
+      .wrapper {
+        margin: 30px 30px 30px 30px;
+      }
+      #res {
+        margin-top: 5px;
+        width: 300px;
+        height: 200px;
+        border: 1px solid black;
+      }
+    </style>
+    <script>
+      window.onload = function() {
+
+        const type_enter = 0;
+        const type_leave = 1;
+        const type_data = 2;
+
+        var tx = document.getElementById('tx');
+        var window = document.getElementById("res");
+        var btn = document.getElementById("btn");
+      
+        btn.addEventListener('click', function(){
+            var value = tx.value;
+            ws.send(value)
+        })
+
+        function systemMsg(msg) {
+          var msg_div = document.createElement('div');
+          msg_div.innerHTML = msg;
+          window.appendChild(msg_div);
+        } 
+
+
+        function color_msg(div,type){   
+           
+            if(type === type_enter){
+                div.style.color = 'green';
+            }
+            if(type === type_leave){
+                div.style.color = 'red';
+            }
+            if(type === type_data){
+                div.style.color = 'black';
+            }
+    
+            return div;
+        }
+
+        function appendMsg(res){
+            var msg_div = document.createElement('div');
+            msg_div = color_msg(msg_div,res.datatype);
+            msg_div.innerHTML = res.data+'------'+res.date;
+            window.appendChild(msg_div);
+        }
+        
+       
+        // create a websocket instance
+        var port = '8080';
+        var url = "ws://localhost:"+port;
+        const ws = new WebSocket(url);
+
+        // add open,message,close ... eventcontroller
+        ws.onopen = function(evt) {
+            systemMsg('客户端连接成功，可以开始聊天');
+        };
+        ws.onmessage = function(evt) {
+            console.log(evt.data)
+            appendMsg(JSON.parse(evt.data));
+        };
+       
+        ws.onerror = function(evt){
+            systemMsg('客户端连接异常出现');
+        }
+
+         ws.onclose = function(evt) {
+            systemMsg('客户端已断开连接');
+        };
+      };
+    </script>
+  </head>
+  <body>
+    <div class="wrapper">
+      <input id="tx" type="text" placeholder="Please input something..." />
+      <input id="btn" type="button" value="Submit" />
+      <div id="res"></div>
+    </div>
+  </body>
+</html>
